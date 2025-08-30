@@ -1,7 +1,18 @@
+using Microsoft.EntityFrameworkCore;
 using ProductCatalogue.Web;
 using ProductCatalogue.Web.Components;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Register DbContext with SQL
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register loaders
+builder.Services.AddTransient<ProductTypeLoader>();
+builder.Services.AddTransient<ColourLoader>();
+builder.Services.AddTransient<ProductLoader>();
 
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
@@ -12,14 +23,23 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddOutputCache();
 
-builder.Services.AddHttpClient<WeatherApiClient>(client =>
-    {
-        // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-        // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-        client.BaseAddress = new("https+http://apiservice");
-    });
-
 var app = builder.Build();
+
+// Create and seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated(); // Creates the database if it doesn't exist
+
+    var loader1 = scope.ServiceProvider.GetRequiredService<ProductTypeLoader>();
+    loader1.LoadProductsFromCsv("product-types.csv");
+
+    var loader2 = scope.ServiceProvider.GetRequiredService<ColourLoader>();
+    loader2.LoadColoursFromCsv("colours.csv");
+
+    var loader3 = scope.ServiceProvider.GetRequiredService<ProductLoader>();
+    loader3.LoadProductsFromCsv("products.csv");
+}
 
 if (!app.Environment.IsDevelopment())
 {
@@ -29,10 +49,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
-
 app.UseOutputCache();
 
 app.MapRazorComponents<App>()
