@@ -32,7 +32,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.EnsureCreated(); // Creates the database if it doesn't exist
 
     var loader1 = scope.ServiceProvider.GetRequiredService<ProductTypeLoader>();
-    loader1.LoadProductsFromCsv("product-types.csv");
+    loader1.LoadProductsFromCsv("producttypes.csv");
 
     var loader2 = scope.ServiceProvider.GetRequiredService<ColourLoader>();
     loader2.LoadColoursFromCsv("colours.csv");

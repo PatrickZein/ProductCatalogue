@@ -22,6 +22,7 @@
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = true,
+                Delimiter = ";"
             };
 
             using var reader = new StreamReader(filePath);

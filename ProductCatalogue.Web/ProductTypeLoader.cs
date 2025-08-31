@@ -22,11 +22,12 @@
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = true,
+                Delimiter = ";"
             };
 
             using var reader = new StreamReader(filePath);
             using var csv = new CsvReader(reader, config);
-            var productTypes = csv.GetRecords<ProductType>().ToList();
+            var productType = csv.GetRecords<ProductType>().ToList();
 
             // Optional: Clear existing data
             if (_dbContext.ProductType.Any())
@@ -35,7 +36,7 @@
                 _dbContext.SaveChanges();
             }
 
-            _dbContext.ProductType.AddRange(productTypes);
+            _dbContext.ProductType.AddRange(productType);
             _dbContext.SaveChanges();
         }
     }

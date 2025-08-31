@@ -1,4 +1,4 @@
-Id,Name,Type,Colour
-1,Plain Sofa,Sofa,"White, Oats, Blue, Ruby"
-2,Comfy Armchair,Armchair,"Black, Indigo, Teal"
-3,Stylish Chair,Chair,"Gray, Pink, Green"
+ID;Name;Type;Colours
+1;Plain Sofa;Sofa;"White, Oats, Blue, Ruby"
+2;Comfy Armchair;Armchair;"Black, Indigo, Teal"
+3;Stylish Chair;Chair;"Gray, Pink, Green"
